@@ -1,12 +1,20 @@
+#!/bin/bash
+
 # ----------------------------------------------------------------------------------------------------------------
 
 # Check for the first argument
-if [ -z $1 ] ; then
+if [ -z "$1" ] ; then
   echo -e "This sript requires exactly ONE non-empty argument: BASE_URL" >&2
   exit 1
 fi
 
-if [ `echo "$1" | grep -c -e 'thetrove.net' ` -eq 0 ] ; then
+if [ "$1" = "--help" ] || [ "$1" = "-h" ] ; then
+  # HELP
+  echo -e "\n\tBash 5 Script 'trove_download.sh', written and tested on Fedora 30"
+  echo -e "\tRequires following packages: bash wget curl python tree grep sed"
+  echo -e "\n\tThis script takes one argument - the URL, from which it should download all files listed there, and recurse to all available subdirectories\n"
+elif [ `echo "$1" | grep -c -e 'thetrove.net' ` -eq 0 ] ; then
+  # Check that the URL is for the correct Trove
   echo -e "The URL is mean to point to the 'thetrove.net'" >&2
   exit 1
 fi
@@ -41,7 +49,7 @@ download_from_thetrove ()
  PARSED_DIRLIST=`echo "$PARSED_WEBPAGE" | grep -e 'class="litem dir'   | sed -En "s/.*href='(.*)'.*/\1/p"`
  PARSED_FILELIST=`echo "$PARSED_WEBPAGE" | grep -e 'class="litem file' | sed -En "s/.*href='\.(.*)'.*/\1/p"`
 
- if [ -n $PARSED_FILELIST ] ; then
+ if [ -n "$PARSED_FILELIST" ] ; then
    # Download the files now
    mkdir -p "$DIR_STRUCTURE"
    for i in $PARSED_FILELIST ; do
@@ -52,7 +60,7 @@ download_from_thetrove ()
  fi
 
 
- if [ -n $PARSED_DIRLIST ] ; then
+ if [ -n "$PARSED_DIRLIST" ] ; then
    # Recurse to sub-directories
    for i in $PARSED_DIRLIST ; do
      echo -e " DESCENDING TO \t\t" `urldecode "$DIR_STRUCTURE$i"`
