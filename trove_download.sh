@@ -12,10 +12,13 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ] ; then
   # HELP
   echo -e "\n\tBash 5 Script 'trove_download.sh', written and tested on Fedora 30"
   echo -e "\tRequires following packages: bash wget curl python tree grep sed"
-  echo -e "\n\tThis script takes one argument - the URL, from which it should download all files listed there, and recurse to all available subdirectories\n"
+  echo -e "\n\tThis script takes one argument - the URL, from which it should download all files listed there, and recurse to all available subdirectories"
+  echo -e "\n\tThe URL *MUST* end with '/index.html'\n"
+  exit 0
 elif [ `echo "$1" | grep -c -e 'thetrove.net' ` -eq 0 ] ; then
   # Check that the URL is for the correct Trove
-  echo -e "The URL is mean to point to the 'thetrove.net'" >&2
+  echo -e "\n\tThe URL is mean to point to the 'thetrove.net'" >&2
+  echo -e "\n\tThe URL *MUST* end with '/index.html'\n"
   exit 1
 fi
 
