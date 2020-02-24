@@ -41,7 +41,12 @@ download_from_thetrove ()
  BASE_URL="$1"
 
  if [ -z "$BASE_URL" ] ; then
-   echo -e "This FUNCTION requires exactly ONE non-empty argument: BASE_URL" >&2
+   echo -e "\n\tThis FUNCTION requires exactly ONE non-empty argument: BASE_URL\n" >&2
+   return 1
+ fi
+
+ if [ `echo -e "$BASE_URL" | grep -c -e "index.html$" ` -eq 0 ] ; then
+   echo -e "\n\tThe URL *MUST* end with 'index.html'\n" >&2
    return 1
  fi
 
