@@ -41,19 +41,24 @@ download_from_thetrove ()
  PARSED_DIRLIST=`echo "$PARSED_WEBPAGE" | grep -e 'class="litem dir'   | sed -En "s/.*href='(.*)'.*/\1/p"`
  PARSED_FILELIST=`echo "$PARSED_WEBPAGE" | grep -e 'class="litem file' | sed -En "s/.*href='\.(.*)'.*/\1/p"`
 
- # Download the files now
- mkdir -p "$DIR_STRUCTURE"
- for i in $PARSED_FILELIST ; do
-   DECODED_FILE=`urldecode "$i"`;
-   echo -e " \tDOWNLOADING \t$DIR_STRUCTURE$DECODED_FILE"
-   wget "$SHORT_BASE_URL$i" -O "$DIR_STRUCTURE$DECODED_FILE" -a wget_log;
- done
+ if [ -n $PARSED_FILELIST ] ; then
+   # Download the files now
+   mkdir -p "$DIR_STRUCTURE"
+   for i in $PARSED_FILELIST ; do
+     DECODED_FILE=`urldecode "$i"`;
+     echo -e " \tDOWNLOADING \t$DIR_STRUCTURE$DECODED_FILE"
+     wget "$SHORT_BASE_URL$i" -O "$DIR_STRUCTURE$DECODED_FILE" -a wget_log;
+   done
+ fi
 
- # Recurse to sub-directories
- for i in $PARSED_DIRLIST ; do
-   echo -e " DESCENDING TO \t\t" `urldecode "$DIR_STRUCTURE$i"`
-   download_from_thetrove "$SHORT_BASE_URL/$i/index.html"
- done
+
+ if [ -n $PARSED_DIRLIST ] ; then
+   # Recurse to sub-directories
+   for i in $PARSED_DIRLIST ; do
+     echo -e " DESCENDING TO \t\t" `urldecode "$DIR_STRUCTURE$i"`
+     download_from_thetrove "$SHORT_BASE_URL/$i/index.html"
+   done
+ fi
 
  return 0;
 }
